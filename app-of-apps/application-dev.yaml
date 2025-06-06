@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rhtap-chatbot-app-33-development
+  namespace: tssc-gitops
+  finalizers: ["resources-finalizer.argocd.argoproj.io"] 
+spec:
+  project: default
+  source:
+    path: ./components/rhtap-chatbot-app-33/overlays/development
+    repoURL: https://github.com/mvaldron-rhdh/rhtap-chatbot-app-33-gitops.git
+    targetRevision: main
+  destination:
+    namespace: tssc-app-development
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels: 
+        argocd.argoproj.io/managed-by: tssc-gitops
+    automated: 
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - PruneLast=true
